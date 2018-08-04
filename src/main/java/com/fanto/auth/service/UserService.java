@@ -66,7 +66,7 @@ public class UserService {
 		dao.delete(login);
 	}
 
-	// NEW CODE USE em HERE we will skip Daocrap
+	// NEW CODE USE em HERE we will skip DaoCrap
 
 	public List<UserDto> getAll() {
 
@@ -77,6 +77,20 @@ public class UserService {
 			usersDto.add(new UserDto(user.getLogin()));
 		}
 		return usersDto;
+	}
+
+	public UserDto get(String login) {
+		User theUser = em.find(User.class, login);
+		if (theUser == null)
+			return null;
+		UserDto userDto = new UserDto(theUser.getLogin());
+		TypedQuery<UserRole> qry = em.createNamedQuery(UserRole.SELECT_ROLES_FOR_LOGIN, UserRole.class);
+		qry.setParameter("login", login);
+		List<UserRole> rs = qry.getResultList();
+		for (UserRole role : rs) {
+			userDto.addRole(role.getPrimaryKey().getRole());
+		}
+		return userDto;
 	}
 
 }
