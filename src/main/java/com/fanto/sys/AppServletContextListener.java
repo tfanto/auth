@@ -1,4 +1,4 @@
-package com.fanto.auth.rest;
+package com.fanto.sys;
 
 import java.io.File;
 import java.io.FileInputStream;
