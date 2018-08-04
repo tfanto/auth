@@ -11,9 +11,12 @@ import javax.persistence.Table;
 @Table(name = "app_user_role")
 
 @NamedQueries({
-		@NamedQuery(name = "SELECT_ROLES", query = "select ur  FROM UserRole ur where  ur.primaryKey.login=:login"), 
+		@NamedQuery(name = UserRole.SELECT_ROLES_FOR_LOGIN, query = "select ur  FROM UserRole ur where  ur.primaryKey.login=:login"), 
 })
 public class UserRole {
+	
+	public static final String SELECT_ROLES_FOR_LOGIN = "userrole.selectrolesforlogin";
+
 
 	public static final String DELETE_ROLES_FOR_LOGIN = "delete  FROM UserRole ur where  ur.primaryKey.login=:login";
 

@@ -37,7 +37,7 @@ public class LoginDao {
 			}
 
 			List<String> roles = new ArrayList<>();
-			TypedQuery<UserRole> roles_query = em.createNamedQuery("SELECT_ROLES", UserRole.class);
+			TypedQuery<UserRole> roles_query = em.createNamedQuery(UserRole.SELECT_ROLES_FOR_LOGIN, UserRole.class);
 			roles_query.setParameter("login", login);			
 			List<UserRole> rs = roles_query.getResultList();
 			

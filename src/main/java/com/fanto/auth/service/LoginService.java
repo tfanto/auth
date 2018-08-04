@@ -6,11 +6,9 @@ import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
-import javax.ws.rs.core.Context;
 
 import com.fanto.auth.dao.LoginDao;
-import com.fanto.auth.rest.AppServletContextListener;
+import com.fanto.sys.AppServletContextListener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.EncryptionMethod;
@@ -29,8 +27,7 @@ public class LoginService {
 
 	private ObjectMapper MAPPER = new ObjectMapper();
 
-	public String login(String login, String password)
-			throws KeyLengthException, JOSEException, JsonProcessingException {
+	public String login(String login, String password) throws KeyLengthException, JOSEException, JsonProcessingException {
 
 		List<String> roles = dao.login(login, password);
 
@@ -42,8 +39,7 @@ public class LoginService {
 
 		// Create the JWE object and encrypt it
 		JWEObject jweObject = new JWEObject(header, payload);
-		
-		
+
 		jweObject.encrypt(new DirectEncrypter(getKey()));
 
 		// Serialize to compact JOSE form...
