@@ -44,6 +44,8 @@ public class AppRequestFilter implements ContainerRequestFilter {
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		
+		
+		
 		String path = uriInfo.getPath();
 		if(path.startsWith("/login")) {
 			return;
@@ -113,6 +115,8 @@ public class AppRequestFilter implements ContainerRequestFilter {
 			}
 
 		});
+		
+		
 	}
 
 	/*

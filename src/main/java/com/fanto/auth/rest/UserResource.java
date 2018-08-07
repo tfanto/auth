@@ -2,6 +2,7 @@ package com.fanto.auth.rest;
 
 import java.util.List;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
@@ -26,7 +27,7 @@ public class UserResource {
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed( "ADMIN" )
+	@RolesAllowed("ADMIN")
 	public Response getAll() {
 		List<UserDto> users = userService.getAll();
 		return Response.ok(users).build();
@@ -35,7 +36,7 @@ public class UserResource {
 	@GET
 	@Path(value = "{login}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed( "ADMIN" )
+	@RolesAllowed("ADMIN")
 	public Response get(@PathParam("login") String login) {
 		UserDto user = userService.get(login);
 		return Response.ok(user).build();
@@ -44,6 +45,7 @@ public class UserResource {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed( "ADMIN" )
+	//@PermitAll()
 	public Response create(UserDto user) {
 		UserDto created = userService.create(user);
 		return Response.ok(created).build();
@@ -51,7 +53,7 @@ public class UserResource {
 
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed( "ADMIN" )
+	@RolesAllowed("ADMIN")
 	public Response update(UserDto user) {
 		UserDto created = userService.update(user);
 		return Response.ok(created).build();
@@ -60,7 +62,7 @@ public class UserResource {
 	@DELETE
 	@Path(value = "{uid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed( "ADMIN" )
+	@RolesAllowed("ADMIN")
 	public Response removeUser(@PathParam("uid") String uid) {
 		userService.delete(uid);
 		return Response.ok().header("deleted_uid", uid).build();
