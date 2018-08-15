@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -14,13 +15,18 @@ import org.mindrot.jbcrypt.BCrypt;
 import com.fanto.auth.entity.User;
 import com.fanto.auth.entity.UserRole;
 import com.fanto.auth.entity.UserRolePK;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fnt.dto.UserDto;
+import com.nimbusds.jose.JOSEException;
 
 @Stateless
 public class UserService {
 
 	@PersistenceContext(name = "simple_PU")
 	private EntityManager em;
+
+	@Inject
+	LoginService loginService;
 
 	// NEW CODE USE em HERE we will skip DaoCrap
 
@@ -53,7 +59,7 @@ public class UserService {
 
 		User usr = new User();
 		usr.setLogin(user.getLogin());
-		
+
 		String pwd = user.getLogin();
 		usr.setPasssword(BCrypt.hashpw(pwd, BCrypt.gensalt()));
 
@@ -106,6 +112,49 @@ public class UserService {
 
 		// nice trix em.remove(em.contains(user) ? user : em.merge(user));
 
+	}
+
+	public static final String SET_PWD = "update User u set  u.password=:password where u.login=:login";
+
+	public Boolean update(String login, String pwd) {
+		if (login == null)
+			return false;
+		if (pwd == null)
+			return false;
+		String encrypted = BCrypt.hashpw(pwd, BCrypt.gensalt());
+		Query query = em.createQuery(SET_PWD);
+		query.setParameter("password", encrypted);
+		query.setParameter("login", login);
+		int n = query.executeUpdate();
+		return n == 1;
+	}
+
+	public boolean updatePwd(String currentUser, String login, String oldpwd, String newpwd) {
+
+		if (currentUser == null)
+			return false;
+		if (login == null)
+			return false;
+		if (!login.equals(currentUser))
+			return false;
+		if (oldpwd == null)
+			return false;
+		if (newpwd == null)
+			return false;
+
+		User theUser = em.find(User.class, login);
+		if (theUser == null)
+			return false;
+
+		// here login in with oldpassword as well
+		try {
+			loginService.login(login, oldpwd);
+		} catch (JsonProcessingException | JOSEException e) {
+			return false;
+		}
+		theUser.setPasssword(BCrypt.hashpw(newpwd, BCrypt.gensalt()));
+		em.merge(theUser);
+		return true;
 	}
 
 }
