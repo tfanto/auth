@@ -20,10 +20,22 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
 import com.fanto.auth.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fnt.dto.UserDto;
 
 @Path("user")
 public class UserResource {
+	
+	
+	ObjectMapper MAPPER = null;
+	public UserResource() {
+		MAPPER = new ObjectMapper();
+		MAPPER.registerModule(new JavaTimeModule());
+	}
+
+
 
 	@Inject
 	private UserService userService;
@@ -41,16 +53,16 @@ public class UserResource {
 	@Path(value = "{login}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed("ADMIN")
-	public Response get(@PathParam("login") String login) {
+	public Response get(@PathParam("login") String login) throws JsonProcessingException {
 		UserDto user = userService.get(login);
-		return Response.ok(user).build();
+		String json = MAPPER.writeValueAsString(user);
+		return Response.ok(json).build();
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed("ADMIN")
-	// @PermitAll()
 	public Response create(UserDto user) {
 		UserDto created = userService.create(user);
 		return Response.ok(created).build();
@@ -75,11 +87,11 @@ public class UserResource {
 		if (currentUser != null) {
 			String login = payload.get("login");
 			if (login != null) {
-				if(login.equals(currentUser)) {
+				if (login.equals(currentUser)) {
 					String oldpwd = payload.get("oldpwd");
 					String newpwd = payload.get("newpwd");
-					if(userService.updatePwd(currentUser, login, oldpwd,newpwd)) {
-						return Response.status(Status.OK).build();						
+					if (userService.updatePwd(currentUser, login, oldpwd, newpwd)) {
+						return Response.status(Status.OK).build();
 					}
 				}
 			}
