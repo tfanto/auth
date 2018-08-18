@@ -52,6 +52,9 @@ public class UserService {
 		for (UserRole role : rs) {
 			userDto.addRole(role.getPrimaryKey().getRole());
 		}
+		userDto.setBlocked(theUser.getBlocked());
+		userDto.setConfirmed(theUser.getConfirmed());
+		userDto.setLastlogin(theUser.getLastlogin());
 		return userDto;
 	}
 
@@ -59,7 +62,8 @@ public class UserService {
 
 		User usr = new User();
 		usr.setLogin(user.getLogin());
-
+		usr.setBlocked(user.getBlocked());
+		usr.setConfirmed(user.getConfirmed());
 		String pwd = user.getLogin();
 		usr.setPasssword(BCrypt.hashpw(pwd, BCrypt.gensalt()));
 
@@ -76,6 +80,7 @@ public class UserService {
 		return user;
 	}
 
+	// update everything but NOT password
 	public UserDto update(UserDto user) {
 		User theUser = em.find(User.class, user.getLogin());
 		if (theUser == null) {
@@ -95,6 +100,8 @@ public class UserService {
 			userRole.setDescription("Description for " + user.getLogin());
 			em.persist(userRole);
 		}
+		theUser.setBlocked(user.getBlocked());
+		theUser.setConfirmed(user.getConfirmed());
 		em.merge(theUser);
 		return user;
 
@@ -116,6 +123,7 @@ public class UserService {
 
 	public static final String SET_PWD = "update User u set  u.password=:password where u.login=:login";
 
+	// used from admin UI
 	public Boolean update(String login, String pwd) {
 		if (login == null)
 			return false;
@@ -129,6 +137,14 @@ public class UserService {
 		return n == 1;
 	}
 
+	/** used from user page
+	 * 
+	 * @param currentUser
+	 * @param login
+	 * @param oldpwd
+	 * @param newpwd
+	 * @return
+	 */
 	public boolean updatePwd(String currentUser, String login, String oldpwd, String newpwd) {
 
 		if (currentUser == null)

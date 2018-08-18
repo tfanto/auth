@@ -40,6 +40,12 @@ public class AppRequestFilter implements ContainerRequestFilter {
 
 	@Context
 	UriInfo uriInfo;
+	
+	//@Override
+	public void filterXX(ContainerRequestContext requestContext) throws IOException {
+		
+	}
+
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
