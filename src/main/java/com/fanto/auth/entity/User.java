@@ -33,7 +33,7 @@ public class User {
 
 	@Id
 	@Column(name = "login")
-	@Email
+	@Email(message="Not a valid email format")
 	private String login;
 
 	@Column(name = "password")
