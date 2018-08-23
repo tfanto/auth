@@ -25,6 +25,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fnt.AppException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.Payload;
@@ -86,10 +87,6 @@ public class AppRequestFilter implements ContainerRequestFilter {
 		// transaction tracking every request must be trackable
 		MDC.put(TRANSACTION_ID, UUID.randomUUID().toString());
 
-		// AppUserContext user = new AppUserContext(payload);
-		// AppSecurityContext securityContext = new AppSecurityContext(uriInfo, user);
-		// requestContext.setSecurityContext(securityContext);
-
 		String user = String.valueOf(payload.get("user"));
 		String rolesStr = String.valueOf(payload.get("roles"));
 
@@ -124,21 +121,6 @@ public class AppRequestFilter implements ContainerRequestFilter {
 		
 		
 	}
-
-	/*
-	 * @Override public void filter(ContainerRequestContext requestContext) throws
-	 * IOException {
-	 * 
-	 * // transaction tracking every request must be trackable
-	 * MDC.put(TRANSACTION_ID, UUID.randomUUID().toString());
-	 * 
-	 * Map<String, Object> payload = new HashMap<>(); payload.put("name",
-	 * "testuser"); payload.put("roles", "ADMIN,USER,GUEST");
-	 * 
-	 * AppUserContext user = new AppUserContext(payload); AppSecurityContext
-	 * securityContext = new AppSecurityContext(uriInfo, user);
-	 * requestContext.setSecurityContext(securityContext); }
-	 */
 
 	@SuppressWarnings("unused")
 	private Map<String, Object> decrypt(String jweString) throws ParseException, JOSEException, JsonParseException, JsonMappingException, IOException {
