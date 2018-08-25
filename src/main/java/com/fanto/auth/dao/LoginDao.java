@@ -20,7 +20,7 @@ public class LoginDao {
 	
 	private static final String DEFAULT_ROLE = "GUEST";
 
-	@PersistenceContext(name = "simple_PU")
+	@PersistenceContext
 	private EntityManager em;
 
 	public List<String> login(String login, String password) {
