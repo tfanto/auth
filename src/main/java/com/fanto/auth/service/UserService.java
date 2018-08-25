@@ -22,7 +22,7 @@ import com.nimbusds.jose.JOSEException;
 @Stateless
 public class UserService {
 
-	@PersistenceContext(name = "simple_PU")
+	@PersistenceContext
 	private EntityManager em;
 
 	@Inject
