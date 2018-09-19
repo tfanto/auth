@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -17,7 +16,7 @@ import com.fanto.auth.entity.UserRole;
 
 @Stateless
 public class LoginDao {
-	
+
 	private static final String DEFAULT_ROLE = "GUEST";
 
 	@PersistenceContext
@@ -25,7 +24,7 @@ public class LoginDao {
 
 	public List<String> login(String login, String password) {
 
-		Query query = em.createQuery(User.SELECT_HASH);
+		TypedQuery<User> query = em.createNamedQuery(User.USER_SELECT_HASH, User.class);
 		query.setParameter("login", login);
 		try {
 			User user = (User) query.getSingleResult();
@@ -38,9 +37,9 @@ public class LoginDao {
 
 			List<String> roles = new ArrayList<>();
 			TypedQuery<UserRole> roles_query = em.createNamedQuery(UserRole.SELECT_ROLES_FOR_LOGIN, UserRole.class);
-			roles_query.setParameter("login", login);			
+			roles_query.setParameter("login", login);
 			List<UserRole> rs = roles_query.getResultList();
-			
+
 			if (rs.isEmpty()) {
 				roles.add(DEFAULT_ROLE);
 			} else {
@@ -48,7 +47,7 @@ public class LoginDao {
 					roles.add(r.getPrimaryKey().getRole());
 				}
 			}
-			
+
 			return roles;
 		} catch (NoResultException e) {
 			throw new IllegalArgumentException("Invalid login");

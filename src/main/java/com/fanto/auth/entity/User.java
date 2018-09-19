@@ -16,14 +16,18 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "app_user", indexes = { @Index(columnList = "login", name = "app_user00", unique = true), })
-@NamedQueries({ @NamedQuery(name = User.USER_GET_ALL, query = "SELECT c FROM User c"), })
+@Table(name = "app_user",  indexes = { @Index(columnList = "login", name = "app_user00", unique = true), })
+@NamedQueries({ 
+	 @NamedQuery(name = User.USER_GET_ALL, query = "SELECT c FROM User c"), 
+	 @NamedQuery(name = User.USER_SELECT_HASH, query = "select u  FROM User u where  u.login=:login"), 
+	 })
 public class User {
 
 	public static final String USER_GET_ALL = "user.getall";
+	public static final String USER_SELECT_HASH = "user.selecthash";
+	
 
 	public static final String DELETE_LOGIN = "delete  FROM User u where  u.login=:login";
-	public static final String SELECT_HASH = "select u  FROM User u where  u.login=:login";
 
 	@PreUpdate
 	@PrePersist

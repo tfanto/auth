@@ -8,7 +8,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "app_user_role")
+@Table(name = "app_user_role" )
 
 @NamedQueries({
 		@NamedQuery(name = UserRole.SELECT_ROLES_FOR_LOGIN, query = "select ur  FROM UserRole ur where  ur.primaryKey.login=:login"), 
